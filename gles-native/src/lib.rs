@@ -1,3 +1,5 @@
+#![allow(dead_code, unused_imports, unused_variables)]
+
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
@@ -16,22 +18,54 @@ extern crate gfx_hal as hal;
 extern crate parking_lot;
 
 use back::Backend as B;
+pub(crate) type HalMemory = <B as hal::Backend>::Memory;
+pub(crate) type HalImage = <B as hal::Backend>::Image;
+pub(crate) type HalImageView = <B as hal::Backend>::ImageView;
+pub(crate) type HalSampler = <B as hal::Backend>::Sampler;
+pub(crate) type HalBuffer = <back::Backend as hal::Backend>::Buffer;
+pub(crate) type HalFrameBuffer = <back::Backend as hal::Backend>::Framebuffer;
+pub(crate) type HalFence = <back::Backend as hal::Backend>::Fence;
+pub(crate) type HalRenderPass = <back::Backend as hal::Backend>::RenderPass;
+pub(crate) type HalPipelineLayout = <back::Backend as hal::Backend>::PipelineLayout;
+pub(crate) type HalPipelineCache = <back::Backend as hal::Backend>::PipelineCache;
 
+/// OpenGL (ES) defined types, constants
 mod gl_sys;
 
-//mod registry;
-
-mod texture;
+/// OpenGL (ES) defined functions implementation split into multiple modules
 mod buffer;
-//mod render_buffer;
+mod fragment_state;
 mod frame_buffer;
-mod context;
+mod pixel_operations;
+mod program;
+mod rasterization_state;
+mod render_buffer;
+mod rendering;
+mod shader;
+mod texture;
 mod utilities;
+mod viewport_transformation;
 
-mod object_pool;
+/// Export OpenGL (ES) defined functions
+pub use buffer::*;
+pub use fragment_state::*;
+pub use frame_buffer::*;
+pub use pixel_operations::*;
+//pub use program::*;
+//pub use rasterization_state::*;
+pub use render_buffer::*;
+pub use rendering::*;
+pub use shader::*;
+pub use texture::*;
+/// NOTE: only OpenGL (ES) defined functions
+pub use utilities::*;
+pub use viewport_transformation::*;
+
+/// Entry point to access states and resources
+mod context;
+
+/// Infrastructure
 mod active_object;
+mod object_pool;
 
-//use registry::Id;
-//
-//type ErrorHandle = utilities::Error;
-//type FrameBufferHandle = frame_buffer::FrameBuffer<B>;
+mod hal_registry;

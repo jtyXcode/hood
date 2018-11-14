@@ -1,0 +1,15 @@
+[package]
+name = "egl-native"
+version = "0.1.0"
+
+[lib]
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[features]
+default = []
+
+[dependencies]
+bitflags = "1.0"
+log = "0.4"
+libc = "0.2"
+parking_lot = { version = "0.6", optional = true }

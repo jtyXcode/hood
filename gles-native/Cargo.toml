@@ -18,6 +18,18 @@ libc = "0.2"
 parking_lot = { version = "0.6"}
 gfx-hal = { git = "https://github.com/gfx-rs/gfx" } # required by gfx-memory
 gfx-backend-empty = { git = "https://github.com/gfx-rs/gfx" }
-gfx-backend-metal = { git = "https://github.com/gfx-rs/gfx", optional = true }
-gfx-backend-vulkan = { git = "https://github.com/gfx-rs/gfx", optional = true }
-#gfx-backend-dx12 = { git = "https://github.com/gfx-rs/gfx", optional = true }
+
+[target.'cfg(any(target_os = "macos", all(target_os = "ios", target_arch = "aarch64")))'.dependencies.gfx-backend-metal]
+git = "https://github.com/gfx-rs/gfx"
+version = "0.1"
+optional = true
+
+[target.'cfg(target_os = "android")'.dependencies.gfx-backend-vulkan]
+git = "https://github.com/gfx-rs/gfx"
+version = "0.1"
+optional = true
+
+#[target.'cfg(target_os = "windows")'.dependencies.gfx-backend-dx12]
+#git = "https://github.com/gfx-rs/gfx"
+#version = "0.1"
+#optional = true

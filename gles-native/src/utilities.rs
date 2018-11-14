@@ -1,10 +1,9 @@
-#![allow(non_snake_case)]
-
-use context::HUB;
 use gl_sys::{
-    GLenum, GLubyte, GL_EXTENSIONS, GL_INVALID_ENUM, GL_NO_ERROR, GL_RENDERER, GL_SHADING_LANGUAGE_VERSION, GL_VENDOR, GL_VERSION,
+    GLboolean, GLenum, GLubyte, GL_EXTENSIONS, GL_FALSE, GL_INVALID_ENUM, GL_NO_ERROR, GL_RENDERER, GL_SHADING_LANGUAGE_VERSION,
+    GL_TRUE, GL_VENDOR, GL_VERSION,
 };
-use std::ptr;
+
+use context::{self, HUB};
 
 #[derive(Debug)]
 pub(crate) struct Error {
@@ -17,15 +16,28 @@ impl Default for Error {
     }
 }
 
+// todo refactor to record_error(err, msg)?
+
+//#[cfg(feature = "Release")]
 #[inline]
-pub fn record_error(error: GLenum) {
+pub(crate) fn record_error(error: GLenum) {
     let mut error_guard = HUB.error.lock();
     if error_guard.raw == GL_NO_ERROR {
         error_guard.raw = error;
     }
 }
+//
+//#[cfg(feature = "Debug")]
+//#[inline]
+//pub(crate) fn record_error(error: GLenum) {
+//    let mut error_guard = HUB.error.lock();
+//    if error_guard.raw == GL_NO_ERROR {
+//        error_guard.raw = error;
+//    }
+//}
 
 #[no_mangle]
+#[allow(non_snake_case)]
 pub extern "C" fn glGetError() -> GLenum {
     info!("glGetError");
 
@@ -36,6 +48,7 @@ pub extern "C" fn glGetError() -> GLenum {
 }
 
 #[no_mangle]
+#[allow(non_snake_case)]
 pub extern "C" fn glGetString(name: GLenum) -> *const GLubyte {
     info!("glGetString(name: {:?})", name);
 
@@ -56,7 +69,7 @@ pub extern "C" fn glGetString(name: GLenum) -> *const GLubyte {
         _ => {
             error!("GL_INVALID_ENUM");
             record_error(GL_INVALID_ENUM);
-            return ptr::null();
+            return core::ptr::null();
         }
     }
     .as_ptr()

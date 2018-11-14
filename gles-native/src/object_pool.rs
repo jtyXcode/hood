@@ -7,10 +7,7 @@ pub struct ObjectPool<T> {
     map: BTreeMap<GLuint, Box<T>>,
 }
 
-impl<T> ObjectPool<T>
-where
-    T: Default,
-{
+impl<T: Default> ObjectPool<T> {
     pub fn allocate(&mut self) -> GLuint {
         self.index += 1;
         self.index
@@ -37,7 +34,7 @@ where
     }
 
     #[inline]
-    pub fn is_object_exists(&self, index: GLuint) -> bool {
+    pub fn has_object(&self, index: GLuint) -> bool {
         self.map.contains_key(&index)
     }
 
